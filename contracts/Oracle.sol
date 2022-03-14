@@ -8,7 +8,7 @@ contract Oracle {
 
     event __callbackNewData();
 
-    constructor() public {
+    constructor() {
         owner = msg.sender;
     }
 

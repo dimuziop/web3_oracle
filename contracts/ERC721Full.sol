@@ -1,6 +1,6 @@
 // File: @openzeppelin/contracts/introspection/IERC165.sol
-
-pragma solidity >=0.4.21 <0.6.0;
+// SPDX-License-Identifier: Unlicenced
+pragma solidity >=0.4.21 <0.8.14;
 
 /**
  * @dev Interface of the ERC165 standard, as defined in the
@@ -25,12 +25,12 @@ interface IERC165 {
 
 // File: @openzeppelin/contracts/token/ERC721/IERC721.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 /**
  * @dev Required interface of an ERC721 compliant contract.
  */
-contract IERC721 is IERC165 {
+interface IERC721 is IERC165 {
     event Transfer(
         address indexed from,
         address indexed to,
@@ -50,12 +50,12 @@ contract IERC721 is IERC165 {
     /**
      * @dev Returns the number of NFTs in `owner`'s account.
      */
-    function balanceOf(address owner) public view returns (uint256 balance);
+    function balanceOf(address owner) external view returns (uint256 balance);
 
     /**
      * @dev Returns the owner of the NFT specified by `tokenId`.
      */
-    function ownerOf(uint256 tokenId) public view returns (address owner);
+    function ownerOf(uint256 tokenId) external view returns (address owner);
 
     /**
      * @dev Transfers a specific NFT (`tokenId`) from one account (`from`) to
@@ -73,7 +73,7 @@ contract IERC721 is IERC165 {
         address from,
         address to,
         uint256 tokenId
-    ) public;
+    ) external;
 
     /**
      * @dev Transfers a specific NFT (`tokenId`) from one account (`from`) to
@@ -87,19 +87,19 @@ contract IERC721 is IERC165 {
         address from,
         address to,
         uint256 tokenId
-    ) public;
+    ) external;
 
-    function approve(address to, uint256 tokenId) public;
+    function approve(address to, uint256 tokenId) external;
 
     function getApproved(uint256 tokenId)
-        public
+        external
         view
         returns (address operator);
 
-    function setApprovalForAll(address operator, bool _approved) public;
+    function setApprovalForAll(address operator, bool _approved) external;
 
     function isApprovedForAll(address owner, address operator)
-        public
+        external
         view
         returns (bool);
 
@@ -108,19 +108,19 @@ contract IERC721 is IERC165 {
         address to,
         uint256 tokenId,
         bytes memory data
-    ) public;
+    ) external;
 }
 
 // File: @openzeppelin/contracts/token/ERC721/IERC721Receiver.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 /**
  * @title ERC721 token receiver interface
  * @dev Interface for any contract that wants to support safeTransfers
  * from ERC721 asset contracts.
  */
-contract IERC721Receiver {
+interface IERC721Receiver {
     /**
      * @notice Handle the receipt of an NFT
      * @dev The ERC721 smart contract calls this function on the recipient
@@ -140,12 +140,12 @@ contract IERC721Receiver {
         address from,
         uint256 tokenId,
         bytes memory data
-    ) public returns (bytes4);
+    ) external returns (bytes4);
 }
 
 // File: @openzeppelin/contracts/math/SafeMath.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 /**
  * @dev Wrappers over Solidity's arithmetic operations with added overflow
@@ -255,7 +255,7 @@ library SafeMath {
 
 // File: @openzeppelin/contracts/utils/Address.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 /**
  * @dev Collection of functions related to the address type,
@@ -287,7 +287,7 @@ library Address {
 
 // File: @openzeppelin/contracts/drafts/Counters.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 /**
  * @title Counters
@@ -325,7 +325,7 @@ library Counters {
 
 // File: @openzeppelin/contracts/introspection/ERC165.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 /**
  * @dev Implementation of the `IERC165` interface.
@@ -333,7 +333,7 @@ pragma solidity ^0.5.0;
  * Contracts may inherit from this and call `_registerInterface` to declare
  * their support of an interface.
  */
-contract ERC165 is IERC165 {
+abstract contract ERC165 is IERC165 {
     /*
      * bytes4(keccak256('supportsInterface(bytes4)')) == 0x01ffc9a7
      */
@@ -344,7 +344,7 @@ contract ERC165 is IERC165 {
      */
     mapping(bytes4 => bool) private _supportedInterfaces;
 
-    constructor() internal {
+    constructor() {
         // Derived contracts need only register support for their own interfaces,
         // we register support for ERC165 itself here
         _registerInterface(_INTERFACE_ID_ERC165);
@@ -382,7 +382,7 @@ contract ERC165 is IERC165 {
 
 // File: @openzeppelin/contracts/token/ERC721/ERC721.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 /**
  * @title ERC721 Non-Fungible Token Standard basic implementation
@@ -425,7 +425,7 @@ contract ERC721 is ERC165, IERC721 {
      */
     bytes4 private constant _INTERFACE_ID_ERC721 = 0x80ac58cd;
 
-    constructor() public {
+    constructor() {
         // register the supported interfaces to conform to ERC721 via ERC165
         _registerInterface(_INTERFACE_ID_ERC721);
     }
@@ -626,7 +626,7 @@ contract ERC721 is ERC165, IERC721 {
      * @param to The address that will own the minted token
      * @param tokenId uint256 ID of the token to be minted
      */
-    function _mint(address to, uint256 tokenId) internal {
+    function _mint(address to, uint256 tokenId) internal virtual {
         require(to != address(0), "ERC721: mint to the zero address");
         require(!_exists(tokenId), "ERC721: token already minted");
 
@@ -643,7 +643,7 @@ contract ERC721 is ERC165, IERC721 {
      * @param owner owner of the token to burn
      * @param tokenId uint256 ID of the token being burned
      */
-    function _burn(address owner, uint256 tokenId) internal {
+    function _burn(address owner, uint256 tokenId) internal virtual {
         require(
             ownerOf(tokenId) == owner,
             "ERC721: burn of token that is not own"
@@ -677,7 +677,7 @@ contract ERC721 is ERC165, IERC721 {
         address from,
         address to,
         uint256 tokenId
-    ) internal {
+    ) internal virtual {
         require(
             ownerOf(tokenId) == from,
             "ERC721: transfer of token that is not own"
@@ -737,32 +737,33 @@ contract ERC721 is ERC165, IERC721 {
 
 // File: @openzeppelin/contracts/token/ERC721/IERC721Enumerable.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 /**
  * @title ERC-721 Non-Fungible Token Standard, optional enumeration extension
  * @dev See https://eips.ethereum.org/EIPS/eip-721
  */
-contract IERC721Enumerable is IERC721 {
-    function totalSupply() public view returns (uint256);
+interface IERC721Enumerable is IERC721 {
+    function totalSupply() external view returns (uint256);
 
     function tokenOfOwnerByIndex(address owner, uint256 index)
-        public
+        external
         view
         returns (uint256 tokenId);
 
-    function tokenByIndex(uint256 index) public view returns (uint256);
+    function tokenByIndex(uint256 index) external view returns (uint256);
 }
 
 // File: @openzeppelin/contracts/token/ERC721/ERC721Enumerable.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 /**
  * @title ERC-721 Non-Fungible Token with optional enumeration extension logic
  * @dev See https://eips.ethereum.org/EIPS/eip-721
  */
 contract ERC721Enumerable is ERC165, ERC721, IERC721Enumerable {
+    using SafeMath for uint256;
     // Mapping from owner to list of owned token IDs
     mapping(address => uint256[]) private _ownedTokens;
 
@@ -787,7 +788,7 @@ contract ERC721Enumerable is ERC165, ERC721, IERC721Enumerable {
     /**
      * @dev Constructor function.
      */
-    constructor() public {
+    constructor() {
         // register the supported interface to conform to ERC721Enumerable via ERC165
         _registerInterface(_INTERFACE_ID_ERC721_ENUMERABLE);
     }
@@ -843,7 +844,7 @@ contract ERC721Enumerable is ERC165, ERC721, IERC721Enumerable {
         address from,
         address to,
         uint256 tokenId
-    ) internal {
+    ) internal virtual override {
         super._transferFrom(from, to, tokenId);
 
         _removeTokenFromOwnerEnumeration(from, tokenId);
@@ -857,7 +858,7 @@ contract ERC721Enumerable is ERC165, ERC721, IERC721Enumerable {
      * @param to address the beneficiary that will own the minted token
      * @param tokenId uint256 ID of the token to be minted
      */
-    function _mint(address to, uint256 tokenId) internal {
+    function _mint(address to, uint256 tokenId) internal virtual override {
         super._mint(to, tokenId);
 
         _addTokenToOwnerEnumeration(to, tokenId);
@@ -872,7 +873,7 @@ contract ERC721Enumerable is ERC165, ERC721, IERC721Enumerable {
      * @param owner owner of the token to burn
      * @param tokenId uint256 ID of the token being burned
      */
-    function _burn(address owner, uint256 tokenId) internal {
+    function _burn(address owner, uint256 tokenId) internal virtual override {
         super._burn(owner, tokenId);
 
         _removeTokenFromOwnerEnumeration(owner, tokenId);
@@ -940,7 +941,7 @@ contract ERC721Enumerable is ERC165, ERC721, IERC721Enumerable {
         }
 
         // This also deletes the contents at the last position of the array
-        _ownedTokens[from].length--;
+        _ownedTokens[from].pop();
 
         // Note that _ownedTokensIndex[tokenId] hasn't been cleared: it still points to the old slot (now occupied by
         // lastTokenId, or just over the end of the array if the token was the last one).
@@ -967,20 +968,20 @@ contract ERC721Enumerable is ERC165, ERC721, IERC721Enumerable {
         _allTokensIndex[lastTokenId] = tokenIndex; // Update the moved token's index
 
         // This also deletes the contents at the last position of the array
-        _allTokens.length--;
+        _allTokens.pop();
         _allTokensIndex[tokenId] = 0;
     }
 }
 
 // File: @openzeppelin/contracts/token/ERC721/IERC721Metadata.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 /**
  * @title ERC-721 Non-Fungible Token Standard, optional metadata extension
  * @dev See https://eips.ethereum.org/EIPS/eip-721
  */
-contract IERC721Metadata is IERC721 {
+interface IERC721Metadata is IERC721 {
     function name() external view returns (string memory);
 
     function symbol() external view returns (string memory);
@@ -990,7 +991,7 @@ contract IERC721Metadata is IERC721 {
 
 // File: @openzeppelin/contracts/token/ERC721/ERC721Metadata.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 contract ERC721Metadata is ERC165, ERC721, IERC721Metadata {
     // Token name
@@ -1014,9 +1015,9 @@ contract ERC721Metadata is ERC165, ERC721, IERC721Metadata {
     /**
      * @dev Constructor function
      */
-    constructor(string memory name, string memory symbol) public {
-        _name = name;
-        _symbol = symbol;
+    constructor(string memory name_, string memory symbol_) {
+        _name = name_;
+        _symbol = symbol_;
 
         // register the supported interfaces to conform to ERC721 via ERC165
         _registerInterface(_INTERFACE_ID_ERC721_METADATA);
@@ -1072,7 +1073,7 @@ contract ERC721Metadata is ERC165, ERC721, IERC721Metadata {
      * @param owner owner of the token to burn
      * @param tokenId uint256 ID of the token being burned by the msg.sender
      */
-    function _burn(address owner, uint256 tokenId) internal {
+    function _burn(address owner, uint256 tokenId) internal virtual override {
         super._burn(owner, tokenId);
 
         // Clear metadata (if any)
@@ -1084,7 +1085,7 @@ contract ERC721Metadata is ERC165, ERC721, IERC721Metadata {
 
 // File: @openzeppelin/contracts/token/ERC721/ERC721Full.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 /**
  * @title Full ERC721 Token
@@ -1094,9 +1095,30 @@ pragma solidity ^0.5.0;
  */
 contract ERC721Full is ERC721, ERC721Enumerable, ERC721Metadata {
     constructor(string memory name, string memory symbol)
-        public
         ERC721Metadata(name, symbol)
     {
         // solhint-disable-previous-line no-empty-blocks
+    }
+
+    function _burn(address owner, uint256 tokenId)
+        internal
+        override(ERC721, ERC721Enumerable, ERC721Metadata)
+    {
+        super._burn(owner, tokenId);
+    }
+
+    function _mint(address to, uint256 tokenId)
+        internal
+        override(ERC721, ERC721Enumerable)
+    {
+        super._mint(to, tokenId);
+    }
+
+    function _transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override(ERC721, ERC721Enumerable) {
+        super._transferFrom(from, to, tokenId);
     }
 }
