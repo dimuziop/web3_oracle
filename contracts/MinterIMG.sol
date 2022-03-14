@@ -14,7 +14,7 @@ contract MinterIMG is ERC721, ERC721Enumerable, ERC721URIStorage {
     uint256 public maxSupply = 10000;
     bool public reveal = false;
     bool public paused = false;
-    address owner;
+    address public owner;
     string baseUri;
     string private salt;
     string private secret;
@@ -42,6 +42,10 @@ contract MinterIMG is ERC721, ERC721Enumerable, ERC721URIStorage {
         whitelistedClients[clientAddress] = true;
     }
 
+    function denyClient(address clientAddress) public onlyOwner {
+        whitelistedClients[clientAddress] = false;
+    }
+
     function _beforeTokenTransfer(
         address from,
         address to,
@@ -50,11 +54,9 @@ contract MinterIMG is ERC721, ERC721Enumerable, ERC721URIStorage {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
-    function startMinting(address to, uint256 tokenId) public {
-        emit __mintToken(
-            keccak256(abi.encodePacked(tokenId, salt, secret)),
-            to
-        );
+    function startMinting(address to) public onlyOwner onlyWithelistedClients {
+        uint256 supply = totalSupply();
+        emit __mintToken(keccak256(abi.encodePacked(supply, salt, secret)), to);
     }
 
     function _burn(uint256 tokenId)
@@ -85,7 +87,12 @@ contract MinterIMG is ERC721, ERC721Enumerable, ERC721URIStorage {
         return super.supportsInterface(interfaceId);
     }
 
-    function mint(address _to, uint256 _mintAmount) public payable {
+    function mint(address _to, uint256 _mintAmount)
+        public
+        payable
+        onlyOwner
+        onlyWithelistedClients
+    {
         uint256 supply = totalSupply();
         require(!paused);
         require(_mintAmount > 0);
