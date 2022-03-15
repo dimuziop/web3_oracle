@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "./console.sol";
 
 contract MinterIMG is ERC721, ERC721Enumerable, ERC721URIStorage {
     using SafeMath for uint256;
@@ -21,7 +22,7 @@ contract MinterIMG is ERC721, ERC721Enumerable, ERC721URIStorage {
     mapping(address => bool) public whitelisted;
     mapping(address => bool) public whitelistedClients;
 
-    event __mintToken(bytes32 tokeinId, address to);
+    event __mintToken(bytes32 tokenId, address to);
 
     constructor(
         string memory name_,
@@ -54,8 +55,9 @@ contract MinterIMG is ERC721, ERC721Enumerable, ERC721URIStorage {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
-    function startMinting(address to) public onlyOwner onlyWithelistedClients {
+    function startMinting(address to) public eitherOwnerOrWhitelistedClient {
         uint256 supply = totalSupply();
+        console.log(supply, abi.encodePacked(supply, salt, secret));
         emit __mintToken(keccak256(abi.encodePacked(supply, salt, secret)), to);
     }
 
@@ -90,8 +92,7 @@ contract MinterIMG is ERC721, ERC721Enumerable, ERC721URIStorage {
     function mint(address _to, uint256 _mintAmount)
         public
         payable
-        onlyOwner
-        onlyWithelistedClients
+        eitherOwnerOrWhitelistedClient
     {
         uint256 supply = totalSupply();
         require(!paused);
@@ -117,6 +118,14 @@ contract MinterIMG is ERC721, ERC721Enumerable, ERC721URIStorage {
 
     modifier onlyWithelistedClients() {
         require(whitelistedClients[msg.sender], "Not valid client");
+        _;
+    }
+
+    modifier eitherOwnerOrWhitelistedClient() {
+        require(
+            msg.sender == owner || whitelistedClients[msg.sender],
+            "You're not aproved client nor the owner"
+        );
         _;
     }
 
