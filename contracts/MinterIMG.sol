@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./console.sol";
 
 contract MinterIMG is ERC721, ERC721Enumerable, ERC721URIStorage {
     using SafeMath for uint256;
@@ -57,7 +56,6 @@ contract MinterIMG is ERC721, ERC721Enumerable, ERC721URIStorage {
 
     function startMinting(address to) public eitherOwnerOrWhitelistedClient {
         uint256 supply = totalSupply();
-        console.log(supply, abi.encodePacked(supply, salt, secret));
         emit __mintToken(keccak256(abi.encodePacked(supply, salt, secret)), to);
     }
 
