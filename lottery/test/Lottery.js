@@ -40,7 +40,7 @@ contract("Lottery", async acc => {
         })
 
         await lottery.enter({
-            from: acc[3],
+            from: acc[2],
             value: web3.utils.toWei("0.02", "ether")
         })
 
