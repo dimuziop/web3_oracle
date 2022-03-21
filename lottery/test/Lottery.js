@@ -5,7 +5,7 @@ contract("Lottery", async acc => {
     let lottery;
 
     beforeEach(async () => {
-        lottery = await Lottery.deployed();
+        lottery = await Lottery.new();
     });
 
 
@@ -54,6 +54,9 @@ contract("Lottery", async acc => {
         assert.equal(3, players.length)
 
     })
+
+
+
 
 
 })
