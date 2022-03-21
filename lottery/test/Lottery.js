@@ -28,5 +28,32 @@ contract("Lottery", async acc => {
 
     })
 
+    it("allows multiple account to enter", async () => {
+        await lottery.enter({
+            from: acc[0],
+            value: web3.utils.toWei("0.02", "ether")
+        })
+
+        await lottery.enter({
+            from: acc[1],
+            value: web3.utils.toWei("0.02", "ether")
+        })
+
+        await lottery.enter({
+            from: acc[3],
+            value: web3.utils.toWei("0.02", "ether")
+        })
+
+        const players = await lottery.getPlayers({
+            from: acc[0]
+        })
+
+        assert.equal(acc[0], players[0])
+        assert.equal(acc[1], players[1])
+        assert.equal(acc[2], players[2])
+        assert.equal(3, players.length)
+
+    })
+
 
 })
