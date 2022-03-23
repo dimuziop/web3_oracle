@@ -1,5 +1,7 @@
 pragma solidity ^0.8.12;
 
+// CONTRACT ADDRESS: 0x0f9218d7931bBa89Ba0E9Fa98B5BD2D905Ac6D7e [rinkeby]
+
 contract Lottery {
 
     address public manager;
