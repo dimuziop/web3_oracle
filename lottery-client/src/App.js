@@ -2,6 +2,8 @@ import './App.css';
 import web3 from "./web3";
 import lottery from "./lottery";
 import {Component} from "react";
+import FileUpload from "./fileUpload";
+
 
 class App extends Component {
 
@@ -76,6 +78,8 @@ class App extends Component {
                 <hr />
                 <h2>{this.state.message}</h2>
                 <hr/>
+                <FileUpload />
+
             </div>
         );
     }
